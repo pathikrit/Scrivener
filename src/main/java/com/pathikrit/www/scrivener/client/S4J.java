@@ -23,7 +23,7 @@ public final class S4J {
     private final String user = System.getProperty("user.name");
     private final String host;
     private String appId = "";
-    private String server = "http://localhost";
+    private String server = "http://localhost:8080";
 
     private S4J() {
         String _host;

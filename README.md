@@ -14,7 +14,15 @@ Simple Java client - S4J.java has 5 essential public static methods:
 - **stat**: Takes in key and a number. Visualizations are auto generated on server side
 
 **Server**:
-A simple nodejs server backed by couchdb that accepts log/stat messages
+A simple nodejs server backed by couchdb that accepts log/stat messages. Available API methods:
+-   POST  /log?appid=xxx&entry=json
+-    GET  /log?appid=xxx
+- DELETE  /log?appid=xxx
+
+-   POST  /stat?appid=xxx&entry=json
+-    GET  /stat?appid=xxx
+- DELETE  /stat?appid
+
 
 **Viewer**:
 The same nodejs server serves a single page web app for log/stat visualization

@@ -5,7 +5,7 @@ import static com.pathikrit.www.scrivener.client.S4J.*;
 public class S4JTester {
 
     public static void main(String[] args) {
-        S4J.config("adp-rick-test", "localhost");
+        S4J.config("adp-rick-test", "http://localhost:8124");
         warn("test", new RuntimeException());
         foo();
         print(3, "ok");
