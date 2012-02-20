@@ -13,7 +13,8 @@ b) debug/warn/error - Simple static methods that uses reflection (in separate th
 c) stat - Takes in key and a number. Visualizations are auto generated on server side
 
 Server:
-A simple nodejs server that accepts log/stat messages
-
+A simple nodejs server backed by couchdb that accepts log/stat messages
 
 Viewer:
+The same nodejs server serves a single page web app for log/stat visualization
+

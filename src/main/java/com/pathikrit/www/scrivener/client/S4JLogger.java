@@ -1,4 +1,4 @@
-package com.addepar.data.scrivener;
+package com.pathikrit.www.scrivener.client;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -57,65 +57,27 @@ public final class S4JLogger {
 
     private static enum Type {DEBUG, WARN, ERROR}
 
-    public static void debug(Object msgs) {
-        debug(msgs, null);
-    }
+    public static void debug(Object msgs) { debug(msgs, null); }
+    public static void  warn(Object msgs) {  warn(msgs, null); }
+    public static void error(Object msgs) { error(msgs, null); }
 
-    public static void warn(Object msgs) {
-        warn(msgs, null);
-    }
+    public static void debug(String format, Object... args) { debug(String.format(format, args)); }
+    public static void  warn(String format, Object... args) {  warn(String.format(format, args)); }
+    public static void error(String format, Object... args) { error(String.format(format, args)); }
 
-    public static void error(Object msgs) {
-        error(msgs, null);
-    }
+    public static void debug(Throwable error) { debug(null, error); }
+    public static void  warn(Throwable error) {  warn(null, error); }
+    public static void error(Throwable error) { error(null, error); }
 
-    public static void debug(String format, Object... args) {
-        debug(String.format(format, args));
-    }
+    public static void debug(Object msgs, Throwable error) { log(Type.DEBUG, msgs, error); }
+    public static void  warn(Object msgs, Throwable error) { log( Type.WARN, msgs, error); }
+    public static void error(Object msgs, Throwable error) { log(Type.ERROR, msgs, error); }
 
-    public static void warn(String format, Object... args) {
-        warn(String.format(format, args));
-    }
+    public static void print(Object... objs) { debug(Arrays.deepToString(objs)); }
 
-    public static void error(String format, Object... args) {
-        error(String.format(format, args));
-    }
+    public static void stat(Object key, Number val) { put(instance.statBuffer, new StatEntry(key, val));  }
 
-    public static void debug(Throwable error) {
-        debug(null, error);
-    }
-
-    public static void warn(Throwable error) {
-        warn(null, error);
-    }
-
-    public static void error(Throwable error) {
-        error(null, error);
-    }
-
-    public static void debug(Object msgs, Throwable error) {
-        log(Type.DEBUG, msgs, error);
-    }
-
-    public static void warn(Object msgs, Throwable error) {
-        log(Type.WARN, msgs, error);
-    }
-
-    public static void error(Object msgs, Throwable error) {
-        log(Type.ERROR, msgs, error);
-    }
-
-    public static void print(Object... objs) {
-        debug(Arrays.deepToString(objs));
-    }
-
-    public static void stat(Object key, Number val) {
-        put(instance.statBuffer, new StatEntry(key, val));
-    }
-
-    private static void log(Type type, Object msgs, Throwable error) {
-        put(instance.logBuffer, new LogEntry(type, msgs == null ? "" : msgs.toString(), error));
-    }
+    private static void log(Type type, Object msgs, Throwable error) { put(instance.logBuffer, new LogEntry(type, msgs == null ? "" : msgs.toString(), error)); }
 
     private static <T> void put(BlockingQueue<T> queue, T obj) {
         try {
@@ -192,9 +154,7 @@ public final class S4JLogger {
         @Override
         public String toString() {
             final StringBuilder log = new StringBuilder(String.format(logFormat, user, host, timestamp, type, thread, caller, message));
-            if (stackTrace != null) {
-                log.append("\n\t").append(stackTrace);
-            }
+            if (stackTrace != null) { log.append("\n\t").append(stackTrace); }
             return log.toString();
         }
     }
