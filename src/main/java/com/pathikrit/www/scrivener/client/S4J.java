@@ -13,19 +13,19 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseStackTrace;
 
-public final class S4JLogger {
+public final class S4J {
 
-    private static final S4JLogger instance = new S4JLogger();
+    private static final S4J instance = new S4J();
 
     private final BlockingQueue<LogEntry> logBuffer = new LinkedBlockingDeque<LogEntry>();
     private final BlockingQueue<StatEntry> statBuffer = new LinkedBlockingDeque<StatEntry>();
 
     private final String user = System.getProperty("user.name");
     private final String host;
-    private String appId = "NULL";
+    private String appId = "";
     private String server = "http://localhost";
 
-    private S4JLogger() {
+    private S4J() {
         String _host;
         try {
             _host = InetAddress.getLocalHost().getHostName();
@@ -117,7 +117,7 @@ public final class S4JLogger {
     private static class FullLogEntry {
         private static final Set<String> ignore = new HashSet<String>() {{
             add(Thread.class.getName());
-            add(S4JLogger.class.getName());
+            add(S4J.class.getName());
             add(LogEntry.class.getName());
         }};
 

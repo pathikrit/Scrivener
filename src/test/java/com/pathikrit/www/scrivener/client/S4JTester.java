@@ -1,11 +1,11 @@
 package com.pathikrit.www.scrivener.client;
 
-import static com.pathikrit.www.scrivener.client.S4JLogger.*;
+import static com.pathikrit.www.scrivener.client.S4J.*;
 
-public class S4JLoggerTester {
+public class S4JTester {
 
     public static void main(String[] args) {
-        S4JLogger.config("adp-rick-test", "localhost");
+        S4J.config("adp-rick-test", "localhost");
         warn("test", new RuntimeException());
         foo();
         print(3, "ok");
