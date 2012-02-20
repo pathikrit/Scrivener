@@ -1,27 +1,9 @@
-var bee = require("beeline");
+var server = require('express').createServer();
 
-var router = bee.route({
-    "/log":{
-        "GET":function (req, res) {
-            res.writeHead(200, {'Content-Type':'text/plain'});
-            res.end('Hello World\n');
-        },
-        "POST":function (req, res) {
-
-        }
-    },
-
-    "/stat":{
-        "GET":function (req, res) {
-
-        },
-        "POST":function (req, res) {
-
-        }
-    },
-
-    "/":function (req, res) {
-    }
+server.post('/log', function(req, res){
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end('Hello World\n');
+    console.log(req.query["appid"] + ": " + req.query["entry"]);
 });
 
-require("http").createServer(router).listen(8124);
+server.listen(8124);
