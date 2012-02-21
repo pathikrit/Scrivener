@@ -12,6 +12,7 @@ public class S4JExample {
         foo();
         print(3, "ok");
         stat("time", System.currentTimeMillis() - time);
+        S4J.stop();
     }
 
     public static void foo() {

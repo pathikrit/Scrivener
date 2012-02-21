@@ -9,11 +9,12 @@
 ---
 
 **Java Client**:
-Simple Java client - S4J.java has 5 essential public static methods:
+Simple Java client - S4J.java has 4 essential public static methods:
 
 - **config**(appId, server): Call at the entry point of your app with appId and Scrivener server. Group of related programs should have same appId.
-- **debug/warn/error**: Simple static methods that uses reflection (in separate thread) to figure out filename and line number etc
+- **debug/warn/error/log**: Simple static methods that uses reflection (in separate thread) to figure out filename and line number etc
 - **stat**: Takes in key and a number. Visualizations are auto generated on server side
+- **stop**: Optionally call this at the exit point of your app to make sure all messages are flushed.
 
 ---
 
