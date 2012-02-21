@@ -1,4 +1,4 @@
-package com.pathikrit.www.scrivener.client;
+package com.addepar.www.scrivener;
 
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
@@ -41,13 +41,24 @@ public final class S4J {
         host = _host;
 
         new Thread() {
-            @Override
-            public void run() {
+            @Override public void run() {
                 while (true) {
                     try {
                         final FullLogEntry logEntry = new FullLogEntry(instance.logBuffer.take());
                         send(logEntry);
                         System.out.println(logEntry);
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+
+        new Thread() {
+            @Override public void run() {
+                while (true) {
+                    try {
+                        send(instance.statBuffer.take());
                     } catch (Throwable t) {
                         t.printStackTrace();
                     }
