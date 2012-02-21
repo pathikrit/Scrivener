@@ -145,7 +145,7 @@ public final class S4J {
 
         private static final String logFormat = "%s@%s> (%td-%3$tb-%3$ty %3$tH:%3$tM:%3$tS) %s in thread=%s at %s: %s";
 
-        private final String user, host, type, thread, caller, message, stackTrace;
+        private final String user, host, type, thread, message, caller, stackTrace[];
 
         private FullLogEntry(LogEntry logEntry) {
             super(logEntry.timestamp);
@@ -153,10 +153,10 @@ public final class S4J {
             this.host = instance.host;
             this.type = logEntry.type;
             this.thread = logEntry.thread;
+            this.message = logEntry.message;
             final Throwable error = logEntry.error;
             this.caller = getCaller(error.getStackTrace());
-            this.message = logEntry.message;
-            this.stackTrace = LogEntry.secret.equals(error.getMessage()) ? null : StringUtils.join(getRootCauseStackTrace(error), '\n');
+            this.stackTrace = LogEntry.secret.equals(error.getMessage()) ? null : getRootCauseStackTrace(error);
         }
 
         private String getCaller(StackTraceElement[] stackTraceElements) {
@@ -169,7 +169,7 @@ public final class S4J {
         @Override
         public String toString() {
             final StringBuilder log = new StringBuilder(String.format(logFormat, user, host, timestamp, type, thread, caller, message));
-            if (stackTrace != null) { log.append("\n\t").append(stackTrace); }
+            if (stackTrace != null) { log.append("\n\t").append(StringUtils.join(stackTrace, '\n')); }
             return log.toString();
         }
     }
