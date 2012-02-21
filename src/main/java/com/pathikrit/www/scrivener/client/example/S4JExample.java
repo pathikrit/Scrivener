@@ -1,8 +1,10 @@
-package com.pathikrit.www.scrivener.client;
+package com.pathikrit.www.scrivener.client.example;
+
+import com.pathikrit.www.scrivener.client.S4J;
 
 import static com.pathikrit.www.scrivener.client.S4J.*;
 
-public class S4JTester {
+public class S4JExample {
 
     public static void main(String[] args) {
         S4J.config("adp-rick-test", "http://localhost:8124");

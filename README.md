@@ -9,21 +9,29 @@
 **Java Client**:
 Simple Java client - S4J.java has 5 essential public static methods:
 
-- **config**(appId, server): Call at the entry point of your app with appId and Scrivener server
+- **config**(appId, server): Call at the entry point of your app with appId and Scrivener server. Group of related programs should have same appId.
 - **debug/warn/error**: Simple static methods that uses reflection (in separate thread) to figure out filename and line number etc
 - **stat**: Takes in key and a number. Visualizations are auto generated on server side
 
 **Server**:
-A simple nodejs server backed by couchdb that accepts log/stat messages. Available API methods:
--   POST  /log?appid=xxx&entry=json
--    GET  /log?appid=xxx
-- DELETE  /log?appid=xxx
+A simple nodejs server backed by couchdb (sharded by appIds) that accepts log/stat messages. Available API methods:
 
+-   POST   /log?appid=xxx&entry=json
+-    GET   /log?appid=xxx&since=timestamp
+- DELETE   /log?appid=xxx
+-    GET  /stat?appid=xxx&since=timestamp
+- DELETE  /stat?appid=xxx
 -   POST  /stat?appid=xxx&entry=json
--    GET  /stat?appid=xxx
-- DELETE  /stat?appid
+
 
 
 **Viewer**:
-The same nodejs server serves a single page web app for log/stat visualization
+The same nodejs server serves a single page web app for log/stat visualization at the root-level
+
+-    GET  /
+
+**How-to**:
+
+- Use in Java? Look at S4JExample.java
+- Install and start the server - First run setup.sh which should install everything necessary and then run start_server.sh
 

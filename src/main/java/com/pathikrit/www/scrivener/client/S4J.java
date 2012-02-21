@@ -56,7 +56,7 @@ public final class S4J {
         }.start();
     }
 
-    public static void config(final String appId, final String server) {
+    public static void config(String appId, String server) {
         instance.appId = appId;
         instance.server = StringUtils.removeEnd(server, "/");
         debug("Using scrivener server=%s and appId=%s", appId, server);
@@ -96,12 +96,12 @@ public final class S4J {
 
     private static void send(Object entry) {
         final String method;
-        if (entry instanceof FullLogEntry)   method = "log";
+        if (entry instanceof FullLogEntry)   method =  "log";
         else if (entry instanceof StatEntry) method = "stat";
         else throw new IllegalArgumentException("Unknown entry type: " + entry.getClass());
         try {
             final String url = String.format(urlFormat, instance.server, method, instance.appId, URLEncoder.encode(gson.toJson(entry), "UTF-8"));
-            HttpConnection.connect(url).post();
+            HttpConnection.connect(url).ignoreContentType(true).ignoreHttpErrors(true).post();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -153,18 +153,18 @@ public final class S4J {
         private final String stackTrace;
 
         private FullLogEntry(LogEntry logEntry) {
-            user = instance.user;
-            host = instance.host;
-            timestamp = logEntry.timestamp;
-            type = logEntry.type.name();
-            thread = logEntry.thread;
+            this.user = instance.user;
+            this.host = instance.host;
+            this.timestamp = logEntry.timestamp;
+            this.type = logEntry.type.name();
+            this.thread = logEntry.thread;
             final Throwable error = logEntry.error;
-            caller = getCaller(error.getStackTrace());
-            message = logEntry.message;
-            stackTrace = LogEntry.secret.equals(error.getMessage()) ? null : StringUtils.join(getRootCauseStackTrace(error), '\n');
+            this.caller = getCaller(error.getStackTrace());
+            this.message = logEntry.message;
+            this.stackTrace = LogEntry.secret.equals(error.getMessage()) ? null : StringUtils.join(getRootCauseStackTrace(error), '\n');
         }
 
-        private String getCaller(final StackTraceElement[] stackTraceElements) {
+        private String getCaller(StackTraceElement[] stackTraceElements) {
             for (final StackTraceElement stackTraceElement : stackTraceElements)
                 if (!ignore.contains(stackTraceElement.getClassName()))
                     return stackTraceElement.toString();
