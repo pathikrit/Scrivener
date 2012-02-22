@@ -50,3 +50,5 @@ The same nodejs server serves a single page web app for log/stat visualization a
 - shellinabox
 - Different color of log levels (debug-green, error-red, default yellow)
 - Link to github repo
+- Stat framework can send extended info like memory, cpu
+

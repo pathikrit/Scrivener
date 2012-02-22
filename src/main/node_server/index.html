@@ -7,10 +7,21 @@
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
     <script type="text/javascript" src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
-    <script type="text/javascript">
-        function id(me) { return me; }
+    <script type="text/javascript" src="http://raphaeljs.com/raphael.js"></script>
 
+
+    <script type="text/javascript">
         $(document).ready(function () {
+            $('input:radio').click(function () {
+                var select = $('input:radio[name=viz]:checked').val();
+                $('#projects').children('div').each(function (div) {
+                    if ($(this).attr('id') == select) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
             getLogs('adp-rick-test');
         });
 
@@ -24,29 +35,78 @@
                     columns = _.union(columns, _.keys(doc));
                     return doc;
                 });
-                d3.select('.logs > thead').append('tr').selectAll('tr').data(columns).enter().append('th').text(id);
-                d3.select('.logs > tbody').selectAll('tr').data(docs).enter().append('tr').selectAll('td').data(function (doc) {
-                    var row = new Array(columns.length);
-                    for (var i = 0; i < columns.length; i++) {
-                        row[i] = doc[columns[i]];
-                    }
-                    return row;
-                }).enter().append('td').text(id);
+                d3.select('.logs > thead').append('tr').selectAll('tr').data(columns).enter().append('th').html(
+                        function (col) {
+                            var choices = _.uniq(_.pluck(docs, col));
+                            if (choices.length <= 1) {
+                                return col; // nothing to choose from, just return the column name
+                            }
+                            if (choices.length < 20) { // a dropdown box is nice for these choices
+                                var dropdown = $('<select></select>');
+                                dropdown.append('<option>' + col + '</option>');
+                                _.each(choices, function (choice) {
+                                    dropdown.append('<option>' + (choice ? choice : '') + '</option>');
+                                });
+                                return '<select>' + dropdown.html() + '</select>';
+                            }
+                            return col;
+                        }
+                );
+                d3.select('.logs > tbody').selectAll('tr').data(docs).enter().append('tr').selectAll('td').data(
+                        function (doc) {
+                            var row = new Array(columns.length);
+                            for (var i = 0; i < columns.length; i++) {
+                                row[i] = doc[columns[i]];
+                            }
+                            return row;
+                        }).enter().append('td').text(function (cell) {
+                            return cell;
+                        });
             });
         }
     </script>
 
     <style type="text/css">
-        body { font-family: monospace; background-color: black; color: #adff2f;}
-        table { border-collapse: collapse; border: 2px solid #006400; }
-        table td, th { border: 1px solid #006400; }
+        body {
+            font-family: monospace;
+            background-color: black;
+            color: #adff2f;
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 2px solid #006400;
+        }
+
+        table td, th {
+            border: 1px solid #006400;
+        }
     </style>
 </head>
 <body>
-<table class='logs'>
-    <thead></thead>
-    <tbody></tbody>
-</table>
+
+<h2>
+    <input type="radio" name="viz" value="logs">logs</input>
+    <input type="radio" name="viz" value="stats">stats</input>
+    <input type="radio" name="viz" value="terminal">terminal</input>
+</h2>
+
+<div id="projects">
+    <div id="logs">
+        <table class='logs'>
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="stats" style="display: none">
+        <p>Not done yet!</p>
+    </div>
+
+    <div id="terminal" style="display: none">
+        <p>Not done yet!</p>
+    </div>
+</div>
 
 </body>
 </html>
