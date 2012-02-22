@@ -59,7 +59,7 @@
                             if (choices.length <= 1) {
                                 return col; // nothing to choose from, just return the column name
                             }
-                            if (choices.length < 20) { // a dropdown box is nice for these choices
+                            if (choices.length < 5) { // a dropdown box is nice for these choices
                                 var dropdown = $('<select></select>');
                                 dropdown.append('<option>' + col + '</option>');
                                 _.each(choices, function (choice) {
@@ -70,16 +70,33 @@
                             return col;
                         }
                 );
+
                 d3.select('.logs > tbody').selectAll('tr').data(docs).enter().append('tr').selectAll('td').data(
                         function (doc) {
                             var row = new Array(columns.length);
                             for (var i = 0; i < columns.length; i++) {
-                                row[i] = doc[columns[i]];
+                                row[i] = new Object();
+                                row[i]['key'] = columns[i];
+                                row[i]['value'] = doc[columns[i]];
                             }
                             return row;
-                        }).enter().append('td').text(function (cell) {
-                            return cell;
+                        }).enter().append('td').text(
+                        function (cell) {
+                            if (cell.key == 'timestamp') {
+                                cell.value = d3.time.format.iso(new Date(Number(cell.value)));
+                            }
+                            return cell.value;
+                        }).attr('name', function (cell) {
+                            return cell.key;
                         });
+
+                $('.logs select').change(function (src) {
+                    var filter = src.target.value;
+                    var isAll = src.target.selectedIndex == 0;
+                    alert(isAll);
+                    // create a filter array of length column - null means all
+                    // go through all rows and show or hide them
+                });
             });
         }
 
@@ -104,6 +121,11 @@
         body {
             font-family: monospace;
             background-color: black;
+            color: #adff2f;
+        }
+
+        select {
+            background: transparent;
             color: #adff2f;
         }
 
