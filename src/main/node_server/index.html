@@ -1,6 +1,44 @@
+<!DOCTYPE html>
 <html>
+<head>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+    <script type="text/javascript" src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getLogs('adp-rick-test');
+        });
+
+        function getLogs(appid) {
+            $.get('/log', {'appid':appid}, function (data) {
+                var columns = [];
+                var docs = _.map(data.rows, function (row) {
+                    var doc = row.doc;
+                    delete doc._id;
+                    delete doc._rev;
+                    columns = _.union(columns, _.keys(doc));
+                    return doc;
+                });
+                d3.select('.logs > thead').append('tr').selectAll('tr').data(columns).enter().append('th').text(id);
+                d3.select('.logs > tbody').selectAll('tr').data(docs).enter().append('tr').selectAll('td').data(function (doc) {
+                    var row = new Array(columns.length);
+                    for (var i = 0; i < columns.length; i++) {
+                        row[i] = doc[columns[i]];
+                    }
+                    return row;
+                }).enter().append('td').text(id);
+            });
+        }
+
+        function id(me) { return me; }
+    </script>
+</head>
 <body>
-Make this into 3 tabbed page - one with stats (Piano charts), filterable grid (for logs) and shellinabox thingy
-Maybe link to code in git branch?
+<table class='logs'>
+    <thead></thead>
+    <tbody></tbody>
+</table>
+
 </body>
 </html>

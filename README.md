@@ -43,3 +43,8 @@ The same nodejs server serves a single page web app for log/stat visualization a
 - Install and start the server - First run setup.sh which should install everything necessary and then run start_server.sh
 
 ---
+
+**TODO**:
+
+- Websockets and since parameter to push updates
+- shellinabox
