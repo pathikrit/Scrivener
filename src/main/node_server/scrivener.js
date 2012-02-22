@@ -1,5 +1,5 @@
 "use strict";
-var nano = require('nano')('http://localhost:5984/'), server = require('express').createServer(), fs =require('fs');
+var nano = require('nano')('http://localhost:5984/'), server = require('express').createServer(), fs = require('fs');
 
 function insert(method, req, res) {
     var appId = req.query.appid, entry = req.query.entry, dbName = appId + '_' + method;
