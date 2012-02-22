@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Scrivener</title>
+
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
     <script type="text/javascript" src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
-
     <script type="text/javascript">
+        function id(me) { return me; }
+
         $(document).ready(function () {
             getLogs('adp-rick-test');
         });
@@ -30,9 +34,13 @@
                 }).enter().append('td').text(id);
             });
         }
-
-        function id(me) { return me; }
     </script>
+
+    <style type="text/css">
+        body { font-family: monospace; background-color: black; color: #adff2f;}
+        table { border-collapse: collapse; border: 2px solid #006400; }
+        table td, th { border: 1px solid #006400; }
+    </style>
 </head>
 <body>
 <table class='logs'>

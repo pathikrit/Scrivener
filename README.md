@@ -48,3 +48,5 @@ The same nodejs server serves a single page web app for log/stat visualization a
 
 - Websockets and since parameter to push updates
 - shellinabox
+- Different color of log levels (debug-green, error-red, default yellow)
+- Link to github repo
