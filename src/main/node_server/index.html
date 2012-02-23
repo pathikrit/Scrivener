@@ -116,7 +116,13 @@
                         }).enter().append('td').html(
                         function (cell) {
                             if (cell.key == 'timestamp') {
-                                cell.value = d3.time.format.iso(new Date(Number(cell.value)));
+                                return d3.time.format.iso(new Date(Number(cell.value)));
+                            } else if (cell.key == 'type') {
+                                if (cell.value == 'ERROR') {
+                                    return '<p style="background-color:red;">' + cell.value + '</p>';
+                                } else if (cell.value == 'WARN') {
+                                    return '<p style="background-color:#b8860b;">' + cell.value + '</p>';
+                                }
                             }
                             return cell.value;
                         }).attr('name', function (cell) {

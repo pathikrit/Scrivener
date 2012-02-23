@@ -50,8 +50,7 @@ The client side visualization uses d3/Google Charts API with jquery/underscore.j
 
 - Websockets and since parameter to push updates
 - shellinabox
-- Different color of log levels (debug-green, error-red, default yellow)
-- Figure out github repo automatically
+- Figure out github repo automatically in Java
 - Stat framework can send extended info like memory, cpu
 - Add freeze update button, repopulate fields from sql query on update
 - If timestamp does not exist, add it on server side
