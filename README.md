@@ -17,6 +17,7 @@ Simple Java client - S4J.java has 4 essential public static methods:
 Notes:
 - **Asynchronous Logging**: Messages are put in a light-weight blocking-queue on the client-side and a separate consumer-thread pulls them out from the queue and sends to server. Blazingly fast logging.
 - **Simple Interface**: More info logs (line-numbering) without overheads. No more Logger.getLogger(classname). Simply static import the public methods of S4J.java. Stacktracking/caller-filename-inference are all done in a separate thread using reflection.
+- **Fall-back Option**: Optionally, logs to local loggger (default is log4j) too
 
 ---
 
@@ -53,7 +54,6 @@ The client side visualization uses d3/Google Charts API with jquery/underscore.j
 - Websockets and since parameter to push updates
 - shellinabox
 - Figure out github repo automatically in Java
-- Stat framework can send extended info like memory, cpu
-- Add freeze update button, repopulate fields from sql query on update
-- If timestamp does not exist, add it on server side
+- Stat framework can send extended info like memory, cpu?
+- Advanced log filtering (regex, sql like syntax)
 

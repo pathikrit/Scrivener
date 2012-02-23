@@ -1,5 +1,5 @@
 /*global $, google, _, d3*/
-"use strict";
+'use strict';
 var APP_ID = 'adp-rick-test';
 
 var lastStat;
@@ -116,8 +116,11 @@ function getLogs() {
                     }
                 }
                 return cell.value;
-            }).attr('name', function (cell) {
+            }).attr('name',
+            function (cell) {
                 return cell.key;
+            }).attr('data', function (cell) {
+                return cell.value;
             });
 
         $('.logs select').change(function (src) {
@@ -131,20 +134,24 @@ function getLogs() {
     setTimeout(getLogs, 1000);
 }
 
-var filters = [];
-
+var filters;
 function query() {
     var sql = '';
+    filters = [];
     $.each($('.logs select'), function (idx, col) {
         if (col.value && col.value.length) {
             sql += col.name + '=\'' + col.value + '\' and ';
-            filters[col.name] = col.value;
+            filters[col.name] = {};
+            filters[col.name].key = col.value;
+            filters[col.name].type = 'eq';
         }
     });
     $.each($('.logs input'), function (idx, col) {
         if (col.value && col.value.length) {
             sql += col.name + ' contains \'' + col.value + '\' and ';
-            filters[col.name] = col.value;
+            filters[col.name] = {};
+            filters[col.name].key = col.value;
+            filters[col.name].type = 'contains';
         }
     });
     $('#query').text(sql = sql.replace(/ and $/, ''));
@@ -167,7 +174,25 @@ function populateFilters() {
 
 function filter() {
     $('.logs > tbody tr').each(function (idx, row) {
-
+        row = $(row);
+        var show = true;
+        _.each(row.children(), function (td) {
+            td = $(td);
+            var col = td.attr('name');
+            if (filters[col]) {
+                var cell = td.attr('data');
+                if (filters[col].type === 'eq') {
+                    show &= cell === filters[col].key;
+                } else if (filters[col].type === 'contains') {
+                    show &= cell.indexOf(filters[col].key) >= 0;
+                }
+            }
+        });
+        if (show) {
+            row.show()
+        } else {
+            row.hide();
+        }
     });
 }
 
