@@ -53,4 +53,5 @@ The client side visualization uses d3/Google Charts API with jquery/underscore.j
 - Different color of log levels (debug-green, error-red, default yellow)
 - Link to github repo
 - Stat framework can send extended info like memory, cpu
+- Add freeze update button, repopulate fields from sql query on update
 

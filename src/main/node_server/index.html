@@ -92,13 +92,13 @@
                             }
                             if (choices.length < 5) { // a dropdown box is nice for these choices
                                 var dropdown = $('<select></select>');
-                                dropdown.append('<option>' + col + '</option>');
+                                dropdown.append('<option></option>');
                                 _.each(choices, function (choice) {
                                     dropdown.append('<option>' + (choice ? choice : '') + '</option>');
                                 });
-                                return '<select>' + dropdown.html() + '</select>';
+                                return col + '<br/><select name=\'' + col + '\'>' + dropdown.html() + '</select>';
                             }
-                            return col;
+                            return col + "<br/><input type='text' name='" + col + "'/>"; // lots of data, create a text area
                         }
                 );
 
@@ -122,13 +122,28 @@
                         });
 
                 $('.logs select').change(function (src) {
-                    var filter = src.target.value;
-                    var isAll = src.target.selectedIndex == 0;
-                    alert(isAll);
-                    // create a filter array of length column - null means all
-                    // go through all rows and show or hide them
+                    generateQuery();
+                });
+                $('.logs input').change(function (src) {
+                    generateQuery();
                 });
             });
+
+            function generateQuery() {
+                var sql = 'select * where ';
+                $.each($('.logs select'), function (idx, col) {
+                    if (col.value && col.value.length) {
+                        sql += col.name + '=\'' + col.value + '\' and ';
+                    }
+                });
+                $.each($('.logs input'), function (idx, col) {
+                    if (col.value && col.value.length) {
+                        sql += col.name + ' like \'' + col.value + '\' and ';
+                    }
+                });
+                sql = sql.replace(/ and $/, '').replace(/ where $/, '');
+                $('#query').val(sql);
+            }
         }
     </script>
 
@@ -164,6 +179,7 @@
 
 <div id="projects">
     <div id="logs">
+        <p><label>Query: <input id='query' size="100"/></label></p>
         <table class='logs'>
             <thead></thead>
             <tbody></tbody>
