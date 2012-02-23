@@ -1,5 +1,4 @@
-"use strict";
-var nano = require('nano')('http://localhost:5984/'), express = require('express'), server = require('express').createServer(), fs = require('fs');
+var nano = require('nano')('http://localhost:5984/'), express = require('express'), server = require('express').createServer();
 
 function insert(method, req, res) {
     var appId = req.query.appid, entry = req.query.entry, dbName = appId + '_' + method;
@@ -14,7 +13,7 @@ function insert(method, req, res) {
 
 function list(method, req, res) {
     var appId = req.query.appid, dbName = appId + '_' + method;
-    nano.db.create(dbName, function () { nano.use(dbName).list({'include_docs':true}).pipe(res); });
+    nano.db.create(dbName, function () { nano.use(dbName).list({'include_docs': true}).pipe(res); });
 }
 
 server.post( '/log', function (req, res) { insert( 'log', req, res); });
