@@ -20,6 +20,7 @@
             data.addColumn('string', 'Key');
             data.addColumn('date', 'Date');
             data.addColumn('number', 'Value');
+            //data.addColumn('number', 'Timestamp');
             var newLastStat = 0;
 
             $.get('/stat', {'appid':APP_ID}, function (couchData) {
@@ -32,6 +33,7 @@
                     newLastStat = Math.max(newLastStat, timestamp);
                     rows[i][1] = new Date(timestamp);
                     rows[i][2] = doc.value;
+                    //rows[i][3] = timestamp;
                 }
                 if (newLastStat <= lastStat) {
                     return;
@@ -111,7 +113,7 @@
                                 row[i]['value'] = doc[columns[i]];
                             }
                             return row;
-                        }).enter().append('td').text(
+                        }).enter().append('td').html(
                         function (cell) {
                             if (cell.key == 'timestamp') {
                                 cell.value = d3.time.format.iso(new Date(Number(cell.value)));
@@ -122,27 +124,38 @@
                         });
 
                 $('.logs select').change(function (src) {
-                    generateQuery();
+                    query();
                 });
                 $('.logs input').change(function (src) {
-                    generateQuery();
+                    query();
                 });
             });
 
-            function generateQuery() {
+            function query() {
                 var sql = 'select * where ';
+                var filter = new Array();
                 $.each($('.logs select'), function (idx, col) {
                     if (col.value && col.value.length) {
                         sql += col.name + '=\'' + col.value + '\' and ';
+                        filter[col.name] = col.value;
                     }
                 });
                 $.each($('.logs input'), function (idx, col) {
                     if (col.value && col.value.length) {
                         sql += col.name + ' like \'' + col.value + '\' and ';
+                        filter[col.name] = col.value;
                     }
                 });
                 sql = sql.replace(/ and $/, '').replace(/ where $/, '');
                 $('#query').val(sql);
+                execute(filter);
+            }
+
+            function execute(filter) {
+                alert(filter);
+                $('.logs > tbody tr').each(function (idx, row) {
+
+                });
             }
         }
     </script>
@@ -151,6 +164,10 @@
         body {
             font-family: monospace;
             background-color: black;
+            color: #adff2f;
+        }
+
+        a {
             color: #adff2f;
         }
 
