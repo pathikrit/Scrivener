@@ -19,7 +19,7 @@ npm install nano
 npm install jade
 
 echo "Installing shellinabox..."
-#sudo shellinaboxd -p 443 -s /:LOGIN -t
+#sudo shellinaboxd -p 443 -s /:LOGIN -t --css ~/Downloads/white-on-black.css
 
 echo "Installing maven..."
 sudo add-apt-repository ppa:natecarlson/maven3

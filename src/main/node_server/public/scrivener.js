@@ -50,6 +50,9 @@ $(document).ready(function () {
     $('input:checkbox').click(function (src) {
         $('link').attr('href', $('input:checkbox').is(':checked') ? 'hacker.css' : 'default.css');
     });
+    $('#terminal').click(function (src) {
+        window.location.replace("http://192.168.1.137:443");
+    });
     getLogs();
     getStats();
 });

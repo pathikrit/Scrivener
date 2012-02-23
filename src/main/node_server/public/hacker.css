@@ -18,11 +18,18 @@ a:hover {
     text-decoration: none;
 }
 
+button {
+    font-family: monospace;
+    background: #adff2f;
+    color: #adff2f;
+    border: 1px solid #adff2f;
+}
+
 select {
     background: transparent;
     color: #adff2f;
     font-family: monospace;
-    border: 1px solid #adff2f;
+    border: 1px solid;
 }
 
 input {
