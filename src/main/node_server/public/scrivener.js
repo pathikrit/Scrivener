@@ -114,21 +114,24 @@ function getLogs() {
                     } else if (cell.value === 'WARN') {
                         return '<b style="background-color:#b8860b;">' + cell.value + '</b>';
                     }
+                } else if (cell.key == 'stacktrace' && cell.value) {
+                    return cell.value.join('<br/>');
                 }
                 return cell.value;
             }).attr('name',
             function (cell) {
                 return cell.key;
             }).attr('data', function (cell) {
+                if (cell.key === 'timestamp') {
+                    return d3.time.format.iso(new Date(Number(cell.value)));
+                } else if (cell.key == 'stacktrace' && cell.value) {
+                    return cell.value.join(' ');
+                }
                 return cell.value;
             });
 
-        $('.logs select').change(function (src) {
-            query();
-        });
-        $('.logs input').change(function (src) {
-            query();
-        });
+        $('.logs select').change(query);
+        $('.logs input').keyup(query);
         populateFilters();
     });
     setTimeout(getLogs, 1000);
@@ -184,7 +187,7 @@ function filter() {
                 if (filters[col].type === 'eq') {
                     show &= cell === filters[col].key;
                 } else if (filters[col].type === 'contains') {
-                    show &= cell.indexOf(filters[col].key) >= 0;
+                    show &= cell && cell.indexOf(filters[col].key) >= 0;
                 }
             }
         });
