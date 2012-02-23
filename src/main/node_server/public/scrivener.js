@@ -29,6 +29,8 @@ function getStats() {
         var chart = new google.visualization.MotionChart(document.getElementById('chart_div'));
         chart.draw(data, {width:1000, height:600});
     });
+
+    setTimeout(getStats, 2000);
 }
 
 google.load('visualization', '1', {'packages':['motionchart']});
@@ -48,10 +50,11 @@ $(document).ready(function () {
     $('input:checkbox').click(function (src) {
         $('link').attr('href', $('input:checkbox').is(':checked') ? 'hacker.css' : 'default.css');
     });
+    getLogs();
+    getStats();
 });
 
 var lastLog;
-
 function getLogs() {
     $.get('/log', {'appid':APP_ID}, function (data) {
         var columns = [];
@@ -120,30 +123,51 @@ function getLogs() {
         $('.logs select').change(function (src) {
             query();
         });
+        $('.logs input').change(function (src) {
+            query();
+        });
+        populateFilters();
     });
-
-    function query() {
-        var sql = '';
-        var filter = [];
-        $.each($('.logs select'), function (idx, col) {
-            if (col.value && col.value.length) {
-                sql += col.name + '=\'' + col.value + '\' and ';
-                filter[col.name] = col.value;
-            }
-        });
-        $.each($('.logs input'), function (idx, col) {
-            if (col.value && col.value.length) {
-                sql += col.name + ' contains \'' + col.value + '\' and ';
-                filter[col.name] = col.value;
-            }
-        });
-        $('#query').text(sql = sql.replace(/ and $/, ''));
-        execute(filter);
-    }
-
-    function execute(filter) {
-        $('.logs > tbody tr').each(function (idx, row) {
-
-        });
-    }
+    setTimeout(getLogs, 1000);
 }
+
+var filters = [];
+
+function query() {
+    var sql = '';
+    $.each($('.logs select'), function (idx, col) {
+        if (col.value && col.value.length) {
+            sql += col.name + '=\'' + col.value + '\' and ';
+            filters[col.name] = col.value;
+        }
+    });
+    $.each($('.logs input'), function (idx, col) {
+        if (col.value && col.value.length) {
+            sql += col.name + ' contains \'' + col.value + '\' and ';
+            filters[col.name] = col.value;
+        }
+    });
+    $('#query').text(sql = sql.replace(/ and $/, ''));
+    filter();
+}
+
+function populateFilters() {
+    $.each($('.logs select'), function (idx, col) {
+        if (filters[col.name]) {
+            col.value = filters[col.name];
+        }
+    });
+    $.each($('.logs input'), function (idx, col) {
+        if (filters[col.name]) {
+            col.value = filters[col.name];
+        }
+    });
+    query();
+}
+
+function filter() {
+    $('.logs > tbody tr').each(function (idx, row) {
+
+    });
+}
+
