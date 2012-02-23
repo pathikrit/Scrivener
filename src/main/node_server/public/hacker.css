@@ -1,0 +1,23 @@
+body {
+    font-family: monospace;
+    background-color: black;
+    color: #adff2f;
+}
+
+a {
+    color: #adff2f;
+}
+
+select {
+    background: transparent;
+    color: #adff2f;
+}
+
+table {
+    border-collapse: collapse;
+    border: 2px solid #006400;
+}
+
+table td, th {
+    border: 1px solid #006400;
+}

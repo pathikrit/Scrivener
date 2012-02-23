@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Scrivener</title>
@@ -55,6 +55,9 @@
                         $(this).hide();
                     }
                 });
+            });
+            $('input:checkbox').click(function (src) {
+                $('link').attr('href', $('input:checkbox').is(':checked') ? 'hacker.css' : 'default.css');
             });
             setInterval(function () {
                 getLogs();
@@ -119,9 +122,9 @@
                                 return d3.time.format.iso(new Date(Number(cell.value)));
                             } else if (cell.key == 'type') {
                                 if (cell.value == 'ERROR') {
-                                    return '<p style="background-color:red;">' + cell.value + '</p>';
+                                    return '<b style="background-color:red;">' + cell.value + '</b>';
                                 } else if (cell.value == 'WARN') {
-                                    return '<p style="background-color:#b8860b;">' + cell.value + '</p>';
+                                    return '<b style="background-color:#b8860b;">' + cell.value + '</b>';
                                 }
                             }
                             return cell.value;
@@ -132,13 +135,10 @@
                 $('.logs select').change(function (src) {
                     query();
                 });
-                $('.logs input').change(function (src) {
-                    query();
-                });
             });
 
             function query() {
-                var sql = 'select * where ';
+                var sql = '';
                 var filter = new Array();
                 $.each($('.logs select'), function (idx, col) {
                     if (col.value && col.value.length) {
@@ -148,12 +148,11 @@
                 });
                 $.each($('.logs input'), function (idx, col) {
                     if (col.value && col.value.length) {
-                        sql += col.name + ' like \'' + col.value + '\' and ';
+                        sql += col.name + ' contains \'' + col.value + '\' and ';
                         filter[col.name] = col.value;
                     }
                 });
-                sql = sql.replace(/ and $/, '').replace(/ where $/, '');
-                $('#query').val(sql);
+                $('#query').text(sql = sql.replace(/ and $/, ''));
                 execute(filter);
             }
 
@@ -166,31 +165,10 @@
         }
     </script>
 
-    <style type="text/css">
-        body {
-            font-family: monospace;
-            background-color: black;
-            color: #adff2f;
-        }
+    <link href="default.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">@import url("default.css");</style>
+    <!-- link href="hacker.css" title="hacker" rel="alternate stylesheet" type="text/css" -->
 
-        a {
-            color: #adff2f;
-        }
-
-        select {
-            background: transparent;
-            color: #adff2f;
-        }
-
-        table {
-            border-collapse: collapse;
-            border: 2px solid #006400;
-        }
-
-        table td, th {
-            border: 1px solid #006400;
-        }
-    </style>
 </head>
 <body>
 
@@ -200,9 +178,16 @@
     <input type="radio" name="viz" value="terminal">terminal</input>
 </h2>
 
+<p><input type="checkbox" value="hacker">Hacker</p>
+
 <div id="projects">
     <div id="logs">
-        <p><label>Query: <input id='query' size="100"/></label></p>
+        <p>
+            Query:
+
+            <b id='query'>
+            </b>
+        </p>
         <table class='logs'>
             <thead></thead>
             <tbody></tbody>
