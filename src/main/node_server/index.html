@@ -9,31 +9,40 @@
     <script type="text/javascript" src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
+        var APP_ID = 'adp-rick-test';
+
+        var lastStat;
         google.load('visualization', '1', {'packages':['motionchart']});
-        google.setOnLoadCallback(drawChart);
-        function drawChart() {
+        google.setOnLoadCallback(getStats);
+
+        function getStats() {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Key');
             data.addColumn('date', 'Date');
             data.addColumn('number', 'Value');
-            $.get('/stat', {'appid':'adp-rick-test'}, function (couchData) {
+            var newLastStat = 0;
+
+            $.get('/stat', {'appid':APP_ID}, function (couchData) {
                 var rows = new Array(couchData.rows.length);
                 for (var i = 0; i < rows.length; i++) {
                     rows[i] = new Array(3);
                     var doc = couchData.rows[i].doc;
                     rows[i][0] = doc.key;
-                    rows[i][1] = new Date(Number(doc.timestamp));
+                    var timestamp = Number(doc.timestamp);
+                    newLastStat = Math.max(newLastStat, timestamp);
+                    rows[i][1] = new Date(timestamp);
                     rows[i][2] = doc.value;
                 }
+                if (newLastStat <= lastStat) {
+                    return;
+                }
+                lastStat = newLastStat;
                 data.addRows(rows);
                 var chart = new google.visualization.MotionChart(document.getElementById('chart_div'));
                 chart.draw(data, {width:1000, height:600});
             });
         }
-    </script>
 
-
-    <script type="text/javascript">
         $(document).ready(function () {
             $('input:radio').click(function () {
                 var select = $('input:radio[name=viz]:checked').val();
@@ -46,14 +55,15 @@
                 });
             });
             setInterval(function () {
-                getLogs('adp-rick-test');
+                getLogs();
+                getStats();
             }, 1000);
         });
 
         var lastLog;
 
-        function getLogs(appid) {
-            $.get('/log', {'appid':appid}, function (data) {
+        function getLogs() {
+            $.get('/log', {'appid':APP_ID}, function (data) {
                 var columns = [];
                 var newLastLog = 0;
                 var docs = _.map(data.rows, function (row) {
