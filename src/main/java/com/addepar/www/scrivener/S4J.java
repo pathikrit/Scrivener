@@ -98,9 +98,9 @@ public final class S4J {
     }
 
     public static void stop() {
-        final Entry poision = new Entry(0){};
-        instance.logBuffer.add(poision);
-        instance.statBuffer.add(poision);
+        final Entry poison = new Entry(0){};
+        instance.logBuffer.add(poison);
+        instance.statBuffer.add(poison);
     }
 
     private static abstract class Entry {

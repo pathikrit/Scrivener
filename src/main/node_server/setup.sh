@@ -2,12 +2,8 @@
 
 sudo apt-get update
 
-echo "Installing maven..."
-sudo add-apt-repository ppa:natecarlson/maven3
-sudo apt-get update && sudo apt-get install maven3
-
 echo "Installing couchdb..."
-sudo aptitude install curl couchdb
+sudo apt-get install curl couchdb
 curl -X GET http://localhost:5984/
 
 echo "Installing nodejs..."
@@ -18,8 +14,16 @@ curl http://npmjs.org/install.sh | sudo sh
 sudo npm install -g express
 sudo npm install -g nano
 sudo npm install -g jade
+npm install express
+npm install nano
+npm install jade
 
 echo "Installing shellinabox..."
+#sudo shellinaboxd -p 443 -s /:LOGIN -t
+
+echo "Installing maven..."
+sudo add-apt-repository ppa:natecarlson/maven3
+sudo apt-get update && sudo apt-get install maven3
 
 echo "Building project..."
 cd ../../
