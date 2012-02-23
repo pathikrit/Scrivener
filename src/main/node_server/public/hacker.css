@@ -5,12 +5,31 @@ body {
 }
 
 a {
+    text-decoration: none;
     color: #adff2f;
+}
+
+a:visited {
+    text-decoration: none;
+    color: #adff2f;
+}
+
+a:hover {
+    text-decoration: none;
 }
 
 select {
     background: transparent;
     color: #adff2f;
+    font-family: monospace;
+    border: 1px solid #adff2f;
+}
+
+input {
+    background: black;
+    color: #adff2f;
+    font-family: monospace;
+    border: 1px solid #adff2f;
 }
 
 table {
