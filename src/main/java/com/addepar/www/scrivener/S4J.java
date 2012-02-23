@@ -1,6 +1,8 @@
 package com.addepar.www.scrivener;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.helper.HttpConnection;
 
@@ -20,14 +22,14 @@ public final class S4J {
 
     private static final S4J instance = new S4J();
 
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private static final String urlFormat = "%s/%s?appid=%s&entry=%s";
 
     private final BlockingQueue<Entry> logBuffer = new LinkedBlockingDeque<Entry>(), statBuffer = new LinkedBlockingDeque<Entry>();
 
     private final String user = System.getProperty("user.name"), host;
 
-    private String appId = "NULL", server = "http://localhost:8124";
+    private String appId = "NULL", server = "http://localhost:8124", externalJavaRoot;
 
     private S4J() {
         String _host;
@@ -42,10 +44,13 @@ public final class S4J {
         new Thread() { @Override public void run() { consume("stat", instance.statBuffer); }}.start();
     }
 
-    public static void config(String appId, String server) {
+    public static void config(String appId, String server) { config(appId, server, null); }
+
+    public static void config(String appId, String server,String externalJavaRoot) {
         instance.appId = appId;
         instance.server = StringUtils.removeEnd(server, "/");
-        debug("Using scrivener server=%s and appId=%s", appId, server);
+        instance.externalJavaRoot = StringUtils.removeEnd(externalJavaRoot, "/");
+        System.out.printf("Using scrivener server=%s and appId=%s\n", appId, server);
     }
 
     public static void debug(Object msg) { debug(msg, null); }
@@ -104,7 +109,7 @@ public final class S4J {
     }
 
     private static abstract class Entry {
-        protected final long timestamp;
+        @Expose protected final long timestamp;
 
         protected Entry(long timestamp) {
             this.timestamp = timestamp;
@@ -112,8 +117,8 @@ public final class S4J {
     }
 
     private static class StatEntry extends Entry {
-        private final String key;
-        private final Number value;
+        @Expose private final String key;
+        @Expose private final Number value;
 
         private StatEntry(Object key, Number value) {
             super(System.currentTimeMillis());
@@ -144,8 +149,10 @@ public final class S4J {
         }};
 
         private static final String logFormat = "%s@%s> (%td-%3$tb-%3$ty %3$tH:%3$tM:%3$tS) %s in thread=%s at %s: %s";
+        private static final String externalLinkFormat = "<a href='%s' target='_blank'>%s</a>";
 
-        private final String user, host, type, thread, message, caller, stacktrace[];
+        @Expose private final String user, host, type, thread, message, caller, stacktrace[];
+        private final String _caller;
 
         private FullLogEntry(LogEntry logEntry) {
             super(logEntry.timestamp);
@@ -155,11 +162,20 @@ public final class S4J {
             this.thread = logEntry.thread;
             this.message = logEntry.message;
             final Throwable error = logEntry.error;
-            this.caller = getCaller(error.getStackTrace());
+            this._caller = getCaller(error.getStackTrace());
+            this.caller = getLinkedCaller();
             this.stacktrace = LogEntry.secret.equals(error.getMessage()) ? null : getRootCauseStackTrace(error);
         }
 
-        private String getCaller(StackTraceElement[] stackTraceElements) {
+        private String getLinkedCaller() {
+            if (instance.externalJavaRoot == null) { return _caller; }
+            final String[] parts = _caller.replace("(", "|").replace(")", "|").split("\\|");
+            final String packaging = parts[0].substring(0, parts[0].lastIndexOf(".")).replaceAll("\\.", "/");
+            final String link = instance.externalJavaRoot + '/' + packaging.substring(0, packaging.lastIndexOf("/")) + "/" + parts[1].replace(":", "#L");
+            return String.format(externalLinkFormat, link, _caller);
+        }
+
+        private static String getCaller(StackTraceElement[] stackTraceElements) {
             for (final StackTraceElement stackTraceElement : stackTraceElements)
                 if (!ignore.contains(stackTraceElement.getClassName()))
                     return stackTraceElement.toString();
@@ -168,7 +184,7 @@ public final class S4J {
 
         @Override
         public String toString() {
-            final StringBuilder log = new StringBuilder(String.format(logFormat, user, host, timestamp, type, thread, caller, message));
+            final StringBuilder log = new StringBuilder(String.format(logFormat, user, host, timestamp, type, thread, _caller, message));
             if (stacktrace != null) { log.append("\n\t").append(StringUtils.join(stacktrace, '\n')); }
             return log.toString();
         }
