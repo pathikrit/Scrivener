@@ -35,6 +35,8 @@ The same nodejs server serves a single page web app for log/stat visualization a
 
 -    GET  /
 
+The client side visualization uses d3/Google Charts API with jquery/underscore.js sugar
+
 ---
 
 **Usage**:

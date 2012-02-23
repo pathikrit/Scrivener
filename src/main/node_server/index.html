@@ -13,21 +13,22 @@
         google.setOnLoadCallback(drawChart);
         function drawChart() {
             var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Fruit');
+            data.addColumn('string', 'Key');
             data.addColumn('date', 'Date');
-            data.addColumn('number', 'Sales');
-            data.addColumn('number', 'Expenses');
-            data.addColumn('string', 'Location');
-            data.addRows([
-                ['Apples', new Date(1988, 0, 1), 1000, 300, 'East'],
-                ['Oranges', new Date(1988, 0, 1), 1150, 200, 'West'],
-                ['Bananas', new Date(1988, 0, 1), 300, 250, 'West'],
-                ['Apples', new Date(1989, 6, 1), 1200, 400, 'East'],
-                ['Oranges', new Date(1989, 6, 1), 750, 150, 'West'],
-                ['Bananas', new Date(1989, 6, 1), 788, 617, 'West']
-            ]);
-            var chart = new google.visualization.MotionChart(document.getElementById('chart_div'));
-            chart.draw(data, {width:600, height:300});
+            data.addColumn('number', 'Value');
+            $.get('/stat', {'appid':'adp-rick-test'}, function (couchData) {
+                var rows = new Array(couchData.rows.length);
+                for (var i = 0; i < rows.length; i++) {
+                    rows[i] = new Array(3);
+                    var doc = couchData.rows[i].doc;
+                    rows[i][0] = doc.key;
+                    rows[i][1] = new Date(Number(doc.timestamp));
+                    rows[i][2] = doc.value;
+                }
+                data.addRows(rows);
+                var chart = new google.visualization.MotionChart(document.getElementById('chart_div'));
+                chart.draw(data, {width:1000, height:600});
+            });
         }
     </script>
 
@@ -160,7 +161,7 @@
     </div>
 
     <div id="stats" style="display: none">
-        <div id="chart_div" style="width: 600px; height: 300px;"></div>
+        <div id="chart_div"></div>
     </div>
 
     <div id="terminal" style="display: none">
