@@ -6,6 +6,7 @@ import com.google.gson.annotations.Expose;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.helper.HttpConnection;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
@@ -112,18 +113,22 @@ public final class S4J {
     private static void consume(String method, BlockingQueue<Entry> queue) {
         try {
             for(Entry entry; (entry = queue.take()).timestamp > 0; ) {
-                try {
-                    if (entry instanceof LogEntry) {
-                        entry = new FullLogEntry((LogEntry) entry);
-                        System.out.println(entry);
-                    }
-                    final String url = String.format(urlFormat, instance.server, method, instance.appId, URLEncoder.encode(gson.toJson(entry), "UTF-8"));
-                    HttpConnection.connect(url).ignoreContentType(true).ignoreHttpErrors(true).post();
-                } catch (Throwable t) {
-                    t.printStackTrace();
+                if (entry instanceof LogEntry) {
+                    entry = new FullLogEntry((LogEntry) entry);
+                    System.out.println(entry);
                 }
+                post(method, entry);
             }
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void post(String method, Entry entry) {
+        try {
+            final String url = String.format(urlFormat, instance.server, method, instance.appId, URLEncoder.encode(gson.toJson(entry), "UTF-8"));
+            HttpConnection.connect(url).ignoreContentType(true).ignoreHttpErrors(true).post();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
