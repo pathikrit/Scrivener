@@ -127,7 +127,7 @@ public final class S4J {
     private static void post(String method, Entry entry) {
         try {
             final String url = String.format(urlFormat, instance.server, method, instance.appId, URLEncoder.encode(gson.toJson(entry), "UTF-8"));
-            HttpConnection.connect(url).ignoreContentType(true).ignoreHttpErrors(true).post();
+            HttpConnection.connect(url).timeout(5000).ignoreContentType(true).ignoreHttpErrors(true).post();
         } catch (IOException e) {
             e.printStackTrace();
         }
