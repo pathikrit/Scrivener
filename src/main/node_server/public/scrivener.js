@@ -54,6 +54,7 @@
         $('#terminal').click(function (src) {
             window.location.replace("http://192.168.1.137:443");
         });
+        $('link').attr('href', 'default.css');
         getLogs();
         getStats();
     });
