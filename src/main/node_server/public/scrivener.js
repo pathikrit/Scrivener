@@ -5,13 +5,14 @@
     var APP_ID = 'adp-rick-test';
 
     var lastStat;
+
     function getStats() {
         var data = new google.visualization.DataTable(), newLastStat = 0;
         data.addColumn('string', 'Key');
         data.addColumn('date', 'Date');
         data.addColumn('number', 'Value');
 
-        $.get('/stat', {'appid': APP_ID}, function (couchData) {
+        $.get('/stat', {'appid':APP_ID}, function (couchData) {
             var rows = [];
             for (var i = 0; i < couchData.rows.length; i++) {
                 rows[i] = new Array(3);
@@ -58,6 +59,7 @@
     });
 
     var lastLog;
+
     function getLogs() {
         $.get('/log', {'appid':APP_ID}, function (data) {
             var columns = [];
@@ -141,6 +143,7 @@
     }
 
     var filters;
+
     function query() {
         var sql = '';
         filters = [];
