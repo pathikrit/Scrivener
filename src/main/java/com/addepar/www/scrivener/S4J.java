@@ -18,6 +18,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseStackTrace;
 
+/**
+ * A simple wrapper around the Scrivener API
+ */
+@SuppressWarnings("unused")
 public final class S4J {
 
     private static final S4J instance = new S4J();
@@ -46,6 +50,13 @@ public final class S4J {
 
     public static void config(String appId, String server) { config(appId, server, null); }
 
+    /**
+     * Call once at the start of an app
+     *
+     * @param appId Global app-group shared across same environment for group of different apps
+     * @param server Scrivener server
+     * @param externalJavaRoot If sources can be linked provide this e.g. for Github it is http://github.com/{org}/{project}/tree/{branch}/{root}
+     */
     public static void config(String appId, String server,String externalJavaRoot) {
         instance.appId = appId;
         instance.server = StringUtils.removeEnd(server, "/");
@@ -71,6 +82,12 @@ public final class S4J {
 
     public static void print(Object... objs) { debug(Arrays.deepToString(objs)); }
 
+    /**
+     * Wrapper around Scrivener's stat API. Attaches timestamp automatically before sending to server
+     *
+     * @param key A unique key identifying the statistic metric. Ideally maintain a global enum of stat-keys
+     * @param val A value to denote the metric. Call with value=1 to denote a counter call
+     */
     public static void stat(Object key, Number val) { put(instance.statBuffer, new StatEntry(key, val));  }
 
     public static void log(String type, Object msg, Throwable error) { put(instance.logBuffer, new LogEntry(type, msg == null ? "" : msg.toString(), error)); }
@@ -81,6 +98,15 @@ public final class S4J {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Call once at end of lifecycle of app to make sure log queue is flushed
+     */
+    public static void stop() {
+        final Entry poison = new Entry(0){};
+        instance.logBuffer.add(poison);
+        instance.statBuffer.add(poison);
     }
 
     private static void consume(String method, BlockingQueue<Entry> queue) {
@@ -100,12 +126,6 @@ public final class S4J {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void stop() {
-        final Entry poison = new Entry(0){};
-        instance.logBuffer.add(poison);
-        instance.statBuffer.add(poison);
     }
 
     private static abstract class Entry {
