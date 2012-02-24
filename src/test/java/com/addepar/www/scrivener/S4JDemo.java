@@ -6,7 +6,6 @@ public class S4JDemo extends S4JTests {
 
     boolean halted = true;
 
-
     public static void main(String[] args) {
         final S4JDemo demo = new S4JDemo();
 
@@ -17,12 +16,16 @@ public class S4JDemo extends S4JTests {
                     String s = in.nextLine();
                     if (s.equals("halt")) {
                         demo.halted = true;
-                    } else if(s.equals("resume")) {
+                    } else if (s.equals("resume")) {
                         demo.halted = false;
+                    } else if (s.equals("die")) {
+                        System.out.println("Finished demo!");
+                        System.exit(0);
                     }
-                    demo.notifyAll();
+                    synchronized (demo) {
+                        demo.notifyAll();
+                    }
                 }
-
             }
         }.start();
 
@@ -31,8 +34,8 @@ public class S4JDemo extends S4JTests {
             public void run() {
                 while (true) {
                     try {
-                        synchronized (demo) {
-                            while (demo.halted) {
+                        if (demo.halted) {
+                            synchronized (demo) {
                                 demo.wait();
                             }
                         }
