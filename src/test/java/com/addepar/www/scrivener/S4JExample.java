@@ -1,16 +1,16 @@
 package com.addepar.www.scrivener;
 
-import static com.addepar.www.scrivener.S4J.debug;
-import static com.addepar.www.scrivener.S4J.error;
+import static com.addepar.www.scrivener.S4J.*;
 
-public class S4JExample {
+public class S4JExample extends S4JTests {
 
     public static void main(String[] args) {
         long time = System.currentTimeMillis();
-        S4J.config("adp-rick-test", "http://localhost:8124", "http://github.com/pathikrit/Scrivener/tree/master/src/main/java");
 
-        error("Greenbaum is here", new NullPointerException());
+        stat("woahwoah", 1);
 
+//        error("Greenbaum is here", new NullPointerException());
+//
 //        warn("hello");
 //        warn(UUID.randomUUID().toString());
 //        stat("foo", Math.random());
