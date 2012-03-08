@@ -55,7 +55,8 @@ The client side visualization uses d3/Google Charts API with jquery/underscore.j
 **Todo**:
 
 - Websockets and since parameter to push updates
-- shellinabox
+- Log4J fallback
 - Figure out github repo automatically in Java
 - Advanced log filtering (regex, sql like syntax)
+
 
